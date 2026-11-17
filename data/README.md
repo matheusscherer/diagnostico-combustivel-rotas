@@ -12,7 +12,7 @@ Cada linha = uma rota / viagem executada.
 | motorista | texto | Nome do motorista |
 | regiao | texto | Região / centro de custo |
 | km_realizado | número | Km efetivamente rodados |
-| km_referencia | número | Km da rota planejada / ótima |
+| km_referencia | número > 0 | Km da rota planejada / ótima; zero é inválido porque impede calcular o desvio percentual |
 | litros | número | Combustível consumido (L) |
 | preco_litro | número | Preço do litro (R$) |
 | entregas | número | Quantidade de entregas na rota |

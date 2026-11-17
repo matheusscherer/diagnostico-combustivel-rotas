@@ -27,7 +27,14 @@ def load_rotas(path: Path) -> pd.DataFrame:
     if not path.exists():
         raise FileNotFoundError(f"Arquivo de rotas não encontrado: {path}")
 
-    df = pd.read_csv(path)
+    try:
+        df = pd.read_csv(path)
+    except pd.errors.EmptyDataError as exc:
+        raise ValueError("Arquivo de rotas está vazio") from exc
+
+    if df.empty:
+        raise ValueError("Arquivo de rotas não contém registros")
+
     missing = [c for c in REQUIRED if c not in df.columns]
     if missing:
         raise ValueError(f"Colunas obrigatórias ausentes: {missing}")
@@ -58,9 +65,11 @@ def load_rotas(path: Path) -> pd.DataFrame:
 
     if (df["km_realizado"] == 0).any():
         raise ValueError("km_realizado não pode ser zero")
+    if (df["km_referencia"] == 0).any():
+        raise ValueError("km_referencia não pode ser zero")
 
     df["km_extras"] = (df["km_realizado"] - df["km_referencia"]).clip(lower=0)
-    df["desvio_pct"] = (df["km_extras"] / df["km_referencia"].replace(0, pd.NA) * 100).fillna(0)
+    df["desvio_pct"] = df["km_extras"] / df["km_referencia"] * 100
     df["custo_combustivel_rs"] = df["litros"] * df["preco_litro"]
     df["custo_por_km"] = df["custo_combustivel_rs"] / df["km_realizado"]
     df["custo_desvio_rs"] = df["km_extras"] * df["custo_por_km"]

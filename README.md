@@ -33,6 +33,24 @@ python -m diagnostico_combustivel_rotas
 pytest -v
 ```
 
+## Painel e histórico
+
+Instale a dependência opcional do painel e inicie a interface local:
+
+```bash
+pip install -e ".[dashboard]"
+python -m streamlit run src/diagnostico_combustivel_rotas/dashboard.py --server.address 127.0.0.1
+```
+
+O painel aceita o CSV de exemplo ou um arquivo próprio de até 10 MB, exibe
+indicadores e permite baixar os relatórios Markdown e Excel. Cada execução
+salva no SQLite um resumo dos indicadores e parâmetros em
+`outputs/historico_analises.sqlite3`;
+o CSV enviado não é gravado no banco.
+
+Use apenas dados sintéticos ou autorizados. Em uma publicação pública, não
+envie dados operacionais ou pessoais.
+
 ---
 
 ## Formato
